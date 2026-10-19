@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AssetActivityInterval\StoreAssetActivityIntervalRequest;
+use App\Http\Requests\Telematics\IngestTelematicsPingRequest;
 use App\Http\Requests\AssetActivityInterval\UpdateAssetActivityIntervalRequest;
 use App\Models\Asset;
 use App\Models\AssetActivityInterval;
@@ -46,13 +47,9 @@ class AssetActivityIntervalController extends Controller
      * Ingest an incoming IoT Telemetry Ping.
      * Automatically handles heartbeat extension, state transitions, and midnight rollovers.
      */
-    public function ping(Request $request): JsonResponse
+    public function ping(IngestTelematicsPingRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'asset_id'  => ['required', 'integer', 'exists:assets,id'],
-            'status'    => ['required', 'string', Rule::in(['active', 'idling', 'ignition_off'])],
-            'timestamp' => ['nullable', 'date'],
-        ]);
+        $validated = $request->validated();
 
         $interval = $this->intervalService->recordPing(
             $validated['asset_id'],

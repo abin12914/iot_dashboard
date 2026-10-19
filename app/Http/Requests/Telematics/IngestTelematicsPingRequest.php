@@ -54,27 +54,33 @@ class IngestTelematicsPingRequest extends FormRequest
         // 3. Notification Throttling Window (defaults to 1 hour, configurable up to 24 hours)
         $throttleMinutes = (int) config('telematics.alert_throttle_minutes', 60);
 
+        $notificationStatus = 'sent';
+        $adminEmail = config('mail.admin_address', env('ADMIN_EMAIL', 'admin@example.com'));
+
         // Check if an identical alert was already sent within the throttle window
         if (!Cache::has($cacheKey)) {
             // Lock cache key for the throttle window
             Cache::put($cacheKey, true, now()->addMinutes($throttleMinutes));
 
-            $adminEmail = config('mail.admin_address', env('ADMIN_EMAIL', 'admin@example.com'));
-
             try {
                 Notification::route('mail', $adminEmail)
                     ->notify((new TelematicsPingValidationFailedNotification($payload, $errors, $clientIp))->onQueue('notifications'));
+                $notificationStatus = "Alert email queued to admin ({$adminEmail}) on queue [notifications]";
             } catch (\Throwable $e) {
                 Log::error("Failed to queue admin notification for IoT validation failure: " . $e->getMessage());
+                $notificationStatus = "Failed to queue email: " . $e->getMessage();
             }
         } else {
             Log::info("Throttling duplicate telematics alert notification for {$assetIdentifier} (already sent in last {$throttleMinutes} minutes).");
+            $notificationStatus = "Skipped (Duplicate anomaly within {$throttleMinutes}m rate-limit window)";
         }
 
         // 4. Return clean JSON response with 422 Unprocessable Entity
         throw new HttpResponseException(response()->json([
-            'message' => 'IoT Telemetry packet rejected due to validation failure.',
-            'errors'  => $errors,
+            'message'             => 'IoT Telemetry packet rejected due to validation failure.',
+            'errors'              => $errors,
+            'notification_action' => $notificationStatus,
+            'is_duplicate'        => $notificationStatus !== "Alert email queued to admin ({$adminEmail}) on queue [notifications]",
         ], 422));
     }
 }

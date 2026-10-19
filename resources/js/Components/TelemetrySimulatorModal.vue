@@ -104,6 +104,8 @@ const simulateCorruptPing = async () => {
       status: res.status,
       message: data.message,
       errors: data.errors,
+      notification_action: data.notification_action,
+      is_duplicate: data.is_duplicate,
       sent_at: new Date().toLocaleTimeString(),
     };
   } catch (err) {
@@ -247,9 +249,35 @@ const simulateOffline = (assetId) => {
           <div v-if="responseLog.interval" class="font-mono text-[11px] bg-white/70 p-2 rounded border border-emerald-200/60 mt-1">
             Status: <strong>{{ responseLog.interval.status }}</strong> | Duration: <strong>{{ responseLog.interval.duration_minutes }} min(s)</strong> | Date: <strong>{{ responseLog.interval.local_date }}</strong>
           </div>
-          <div v-if="responseLog.errors" class="font-mono text-[11px] bg-white/70 p-2 rounded border border-rose-200/60 mt-1 text-rose-700">
-            Errors: {{ JSON.stringify(responseLog.errors) }}
-            <div class="text-[10px] text-gray-500 mt-0.5">Alert queued to admin mailbox & rate-limited.</div>
+          <div v-if="responseLog.errors" class="space-y-1.5 mt-1.5">
+            <div class="font-mono text-[11px] bg-white/70 p-2 rounded border border-rose-200/60 text-rose-700">
+              Payload Errors: {{ JSON.stringify(responseLog.errors) }}
+            </div>
+
+            <!-- Email Delivery Status Badge -->
+            <div 
+              class="p-2.5 rounded-lg border text-xs flex items-start gap-2"
+              :class="responseLog.is_duplicate 
+                ? 'bg-amber-50/90 border-amber-200 text-amber-900' 
+                : 'bg-blue-50/90 border-blue-200 text-blue-900'"
+            >
+              <span class="text-base leading-none">
+                {{ responseLog.is_duplicate ? "🛡️" : "📧" }}
+              </span>
+              <div>
+                <div class="font-bold">
+                  {{ responseLog.is_duplicate ? "DUPLICATE ANOMALY THROTTLED" : "ADMIN ALERT EMAIL QUEUED" }}
+                </div>
+                <div class="text-[11px] mt-0.5 opacity-90">
+                  {{ responseLog.notification_action }}
+                </div>
+                <div class="text-[10px] text-gray-500 mt-1">
+                  {{ responseLog.is_duplicate 
+                    ? "Subsequent identical anomaly pings within 60 minutes are deduplicated to protect admin inboxes." 
+                    : "First anomaly encountered: dispatched immediately to Queue [notifications]." }}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

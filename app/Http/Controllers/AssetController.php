@@ -5,19 +5,48 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Asset\StoreAssetRequest;
 use App\Http\Requests\Asset\UpdateAssetRequest;
 use App\Models\Asset;
-use Illuminate\Http\RedirectResponse;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class AssetController extends Controller
 {
     /**
-     * Display a standard listing of assets (Master Asset Directory).
+     * Display a listing of assets with their latest known operational status and last ping time.
+     * If the machine has not emitted telemetry in > 24 hours, it is marked as "offline".
      */
     public function index(Request $request)
     {
-        $assets = Asset::orderBy('code')->paginate(15);
+        $assets = Asset::with(['activityIntervals' => function ($query) {
+            $query->latest('ended_at_utc')->limit(1);
+        }])->orderBy('code')->paginate(15);
+
+        $assets->getCollection()->transform(function ($asset) {
+            $latestInterval = $asset->activityIntervals->first();
+            $timezone = $asset->timezone ?: 'Asia/Dubai';
+
+            if ($latestInterval) {
+                $endedAtUtc = Carbon::parse($latestInterval->ended_at_utc);
+                $lastSeen = $endedAtUtc->copy()->setTimezone($timezone);
+
+                // Check if device is offline (> 24 hours since last telemetry ping)
+                $isOffline = $endedAtUtc->diffInHours(now('UTC')) > 24;
+
+                $asset->last_status = $isOffline ? 'offline' : $latestInterval->status;
+                $asset->raw_status = $latestInterval->status;
+                $asset->is_offline = $isOffline;
+                $asset->last_active_time = $lastSeen->format('M d, H:i');
+                $asset->last_active_diff = $endedAtUtc->diffForHumans();
+            } else {
+                $asset->last_status = 'offline';
+                $asset->raw_status = 'no_data';
+                $asset->is_offline = true;
+                $asset->last_active_time = 'Never';
+                $asset->last_active_diff = 'No telemetry';
+            }
+
+            return $asset;
+        });
 
         if ($request->wantsJson()) {
             return response()->json($assets);
@@ -38,7 +67,7 @@ class AssetController extends Controller
         if ($request->wantsJson()) {
             return response()->json([
                 'message' => 'Asset registered successfully',
-                'data' => $asset,
+                'data'    => $asset,
             ], 201);
         }
 
@@ -69,7 +98,7 @@ class AssetController extends Controller
         if ($request->wantsJson()) {
             return response()->json([
                 'message' => 'Asset updated successfully',
-                'data' => $asset,
+                'data'    => $asset,
             ]);
         }
 

@@ -83,7 +83,7 @@ const deleteAsset = (asset) => {
             </Link>
             <h1 class="text-2xl font-bold text-gray-900">Fleet Asset Inventory</h1>
           </div>
-          <p class="text-sm text-gray-500 mt-1 ml-9">Manage heavy equipment machinery, categories, and telematics configurations</p>
+          <p class="text-sm text-gray-500 mt-1 ml-9">Manage heavy equipment machinery, operational statuses, and telematics configurations</p>
         </div>
 
         <button 
@@ -104,7 +104,8 @@ const deleteAsset = (asset) => {
                 <th scope="col" class="px-6 py-3.5 text-left">Equipment</th>
                 <th scope="col" class="px-6 py-3.5 text-left">Machine Code</th>
                 <th scope="col" class="px-6 py-3.5 text-left">Category</th>
-                <th scope="col" class="px-6 py-3.5 text-left">Deployment Timezone</th>
+                <th scope="col" class="px-6 py-3.5 text-left">Current Telematics Status</th>
+                <th scope="col" class="px-6 py-3.5 text-left">Timezone</th>
                 <th scope="col" class="px-6 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
@@ -125,6 +126,43 @@ const deleteAsset = (asset) => {
                 <td class="px-6 py-4 capitalize font-medium text-gray-700">
                   {{ asset.type.replace('_', ' ') }}
                 </td>
+                
+                <!-- Last Active Status Column -->
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-2">
+                    <span class="relative flex h-2.5 w-2.5">
+                      <span 
+                        v-if="asset.last_status === 'active'"
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"
+                      ></span>
+                      <span 
+                        class="relative inline-flex rounded-full h-2.5 w-2.5"
+                        :class="{
+                          'bg-teal-500': asset.last_status === 'active',
+                          'bg-orange-500': asset.last_status === 'idling',
+                          'bg-amber-900': asset.last_status === 'ignition_off' || asset.last_status === 'off',
+                          'bg-gray-400': asset.last_status === 'offline'
+                        }"
+                      ></span>
+                    </span>
+
+                    <span 
+                      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider"
+                      :class="{
+                        'bg-teal-50 text-teal-700 border border-teal-200': asset.last_status === 'active',
+                        'bg-orange-50 text-orange-700 border border-orange-200': asset.last_status === 'idling',
+                        'bg-amber-50 text-amber-900 border border-amber-200': asset.last_status === 'ignition_off' || asset.last_status === 'off',
+                        'bg-gray-100 text-gray-600 border border-gray-300': asset.last_status === 'offline'
+                      }"
+                    >
+                      {{ asset.last_status === 'offline' ? 'Offline' : asset.last_status.replace('_', ' ') }}
+                    </span>
+                  </div>
+                  <div class="text-[11px] text-gray-400 mt-1 pl-4.5">
+                    {{ asset.is_offline ? 'Last ping: ' + asset.last_active_diff : 'Last active: ' + asset.last_active_time }}
+                  </div>
+                </td>
+
                 <td class="px-6 py-4 text-gray-500 font-mono text-xs">
                   {{ asset.timezone }}
                 </td>
@@ -146,7 +184,7 @@ const deleteAsset = (asset) => {
                 </td>
               </tr>
               <tr v-if="!assets.data || assets.data.length === 0">
-                <td colspan="5" class="px-6 py-12 text-center text-gray-400">
+                <td colspan="6" class="px-6 py-12 text-center text-gray-400">
                   <AlertCircle class="w-8 h-8 mx-auto mb-2 text-gray-300" />
                   No assets currently registered in fleet.
                 </td>

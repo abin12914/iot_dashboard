@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreAssetRequest;
-use App\Http\Requests\UpdateAssetRequest;
+use App\Http\Requests\Asset\StoreAssetRequest;
+use App\Http\Requests\Asset\UpdateAssetRequest;
 use App\Models\Asset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

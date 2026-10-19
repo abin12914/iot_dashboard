@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreAssetActivityIntervalRequest;
-use App\Http\Requests\UpdateAssetActivityIntervalRequest;
+use App\Http\Requests\AssetActivityInterval\StoreAssetActivityIntervalRequest;
+use App\Http\Requests\AssetActivityInterval\UpdateAssetActivityIntervalRequest;
 use App\Models\Asset;
 use App\Models\AssetActivityInterval;
 use App\Services\AssetActivityIntervalService;

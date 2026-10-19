@@ -279,6 +279,9 @@ During the implementation of this fleet telematics solution matching the assessm
 - Hardware pings with missing or corrupt CAN-bus parameters trigger HTTP 422, log a critical error, and queue an email alert to the fleet administrator on queue `notifications`.
 - To prevent inbox flooding during hardware sensor flapping or CAN-bus loop errors, identical validation anomaly signatures from the same device are deduplicated and throttled for **60 minutes**.
 
+### 6. Authentication & Access Control
+- **Intentionally Unauthenticated for Assessment Simplicity**: In accordance with the technical assessment requirements, authentication (login/registration gates) is intentionally not enforced across the primary telematics dashboard, asset directory, and simulation endpoints. This allows immediate, friction-free evaluation and testing of all telematics features directly upon running the application. Standard Laravel Breeze authentication scaffolding remains present under `/login` and `/register` if multi-tenant role-based access control is needed in production.
+
 ---
 
 ## 🛠️ Engineering Stack & AI-Assisted Development Tools

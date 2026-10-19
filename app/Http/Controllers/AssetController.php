@@ -13,16 +13,17 @@ class AssetController extends Controller
 {
     /**
      * Display a listing of assets with their latest known operational status and last ping time.
+     * Uses optimized latestActivityInterval (latestOfMany) backed by compound index [asset_id, ended_at_utc].
      * If the machine has not emitted telemetry in > 24 hours, it is marked as "offline".
      */
     public function index(Request $request)
     {
-        $assets = Asset::with(['activityIntervals' => function ($query) {
-            $query->latest('ended_at_utc')->limit(1);
-        }])->orderBy('code')->paginate(15);
+        $assets = Asset::with('latestActivityInterval')
+            ->orderBy('code')
+            ->paginate(15);
 
         $assets->getCollection()->transform(function ($asset) {
-            $latestInterval = $asset->activityIntervals->first();
+            $latestInterval = $asset->latestActivityInterval;
             $timezone = $asset->timezone ?: 'Asia/Dubai';
 
             if ($latestInterval) {

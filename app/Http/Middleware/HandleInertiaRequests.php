@@ -29,8 +29,26 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $latestInterval = \App\Models\AssetActivityInterval::with('asset')
+            ->orderByDesc('ended_at_utc')
+            ->first();
+
+        $lastPingData = null;
+        if ($latestInterval) {
+            $timestamp = $latestInterval->ended_at_utc ?? $latestInterval->started_at_utc;
+            $tz = $latestInterval->asset?->timezone ?? config('app.timezone', 'UTC');
+            $lastPingData = [
+                'asset_code' => $latestInterval->asset?->code ?? 'Unknown',
+                'formatted_time' => $timestamp ? $timestamp->copy()->setTimezone($tz)->format('d M, H:i') : null,
+                'human_time' => $timestamp ? $timestamp->diffForHumans() : null,
+                'timestamp_utc' => $timestamp?->toISOString(),
+            ];
+        }
+
         return [
             ...parent::share($request),
+            'appName' => config('app.name', 'Telematics'),
+            'lastPing' => $lastPingData,
             'auth' => [
                 'user' => $request->user(),
             ],

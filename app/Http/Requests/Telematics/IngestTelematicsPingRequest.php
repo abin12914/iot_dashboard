@@ -59,7 +59,7 @@ class IngestTelematicsPingRequest extends FormRequest
             // Lock cache key for the throttle window
             Cache::put($cacheKey, true, now()->addMinutes($throttleMinutes));
 
-            $adminEmail = config('mail.admin_address', env('ADMIN_EMAIL', 'admin@latinem.com'));
+            $adminEmail = config('mail.admin_address', env('ADMIN_EMAIL', 'admin@example.com'));
 
             try {
                 Notification::route('mail', $adminEmail)

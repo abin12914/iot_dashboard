@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { Head, Link, useForm, router } from '@inertiajs/vue3';
+import AppNavbar from '@/Components/AppNavbar.vue';
 import { Plus, Edit2, Trash2, X, AlertCircle, ArrowLeft } from 'lucide-vue-next';
 
 const props = defineProps({
@@ -67,7 +68,9 @@ const deleteAsset = (asset) => {
 <template>
   <Head title="Fleet Assets Directory" />
 
-  <div class="min-h-screen bg-gray-50 p-6 lg:p-8">
+  <div class="min-h-screen bg-gray-50">
+    <AppNavbar />
+    <div class="p-6 lg:p-8">
     <div class="max-w-6xl mx-auto space-y-6">
       
       <!-- Top Action Bar -->
@@ -292,6 +295,6 @@ const deleteAsset = (asset) => {
         </form>
       </div>
     </div>
-
+    </div>
   </div>
 </template>

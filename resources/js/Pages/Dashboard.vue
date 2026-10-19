@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import VueApexCharts from 'vue3-apexcharts';
+import AppNavbar from '@/Components/AppNavbar.vue';
 import { 
   Radio, 
   Cpu, 
@@ -40,9 +41,10 @@ const props = defineProps({
   }
 });
 
-// Chart 1: Traveled Distance (Comparative Area / Line Chart)
+// All 15 date labels for categories
 const dateCategories = computed(() => props.dailyMetrics.map(m => m.date_label));
 
+// Chart 1: Traveled Distance (Comparative Area / Line Chart)
 const distanceChart = computed(() => ({
   series: [
     {
@@ -90,6 +92,15 @@ const distanceChart = computed(() => ({
       labels: {
         style: { colors: '#9CA3AF', fontSize: '11px' },
         rotate: -45,
+        formatter: function(val) {
+          if (!val) return "";
+          const idx = dateCategories.value.indexOf(val);
+          // Show alternating dates starting from index 2 (22 Mar, 24 Mar, 26 Mar, ...)
+          if (idx !== -1 && idx >= 2 && idx % 2 === 0) {
+            return val;
+          }
+          return "";
+        }
       },
       axisBorder: { show: false },
       axisTicks: { show: false },
@@ -162,6 +173,15 @@ const engineHoursChart = computed(() => ({
       labels: {
         style: { colors: '#9CA3AF', fontSize: '11px' },
         rotate: -45,
+        formatter: function(val) {
+          if (!val) return "";
+          const idx = dateCategories.value.indexOf(val);
+          // Show alternating dates starting from index 0 (20 Mar, 22 Mar, 24 Mar, ...)
+          if (idx !== -1 && idx % 2 === 0) {
+            return val;
+          }
+          return "";
+        }
       },
       axisBorder: { show: false },
     },
@@ -254,6 +274,15 @@ const messagesChart = computed(() => ({
       labels: {
         style: { colors: '#9CA3AF', fontSize: '11px' },
         rotate: -45,
+        formatter: function(val) {
+          if (!val) return "";
+          const idx = dateCategories.value.indexOf(val);
+          // Show alternating dates starting from index 0 (20 Mar, 22 Mar, 24 Mar, ...)
+          if (idx !== -1 && idx % 2 === 0) {
+            return val;
+          }
+          return "";
+        }
       },
       axisBorder: { show: false },
     },
@@ -276,39 +305,14 @@ const timeSlots = ['11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
 <template>
   <Head title="Fleet Telematics Analytics Dashboard" />
 
-  <div class="min-h-screen bg-[#F3F4F6] p-4 sm:p-6 lg:p-8">
-    <div class="max-w-7xl mx-auto space-y-6">
+  <div class="min-h-screen bg-[#F3F4F6]">
+    <AppNavbar />
+    <div class="p-4 sm:p-6 lg:p-8">
+      <div class="max-w-7xl mx-auto space-y-6">
       
-      <!-- Top Navigation & Brand Header -->
-      <div class="flex items-center justify-between pb-2 border-b border-gray-200">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-white shadow-sm">
-            <Truck class="w-6 h-6" />
-          </div>
-          <div>
-            <h1 class="text-xl font-bold text-gray-900 leading-tight">Telematics Fleet Monitoring</h1>
-            <p class="text-xs text-gray-500">Real-time asset telemetry & operational duty cycles</p>
-          </div>
-        </div>
+        <!-- Top Section: 4 Analytics Cards (Image 1 - 2x2 Grid) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        <div class="flex items-center gap-3">
-          <Link
-            href="/assets"
-            class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-semibold rounded-lg shadow-sm transition-colors"
-          >
-            <Layers class="w-4 h-4 text-gray-500" />
-            Asset Inventory
-          </Link>
-
-          <span v-if="$page.props.auth?.user" class="text-xs text-gray-600 font-medium">
-            Welcome, {{ $page.props.auth.user.name }}
-          </span>
-        </div>
-      </div>
-
-      <!-- Top Section: 4 Analytics Cards (Image 1) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
         <!-- Card 1: Traveled Distance -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
           <div class="flex items-center justify-between mb-4">
@@ -318,7 +322,7 @@ const timeSlots = ['11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
                 Traveled distance ({{ summary.total_distance_km }}km)
               </h2>
             </div>
-            <span class="inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100">
               {{ summary.distance_change_percentage }}
             </span>
           </div>
@@ -350,7 +354,7 @@ const timeSlots = ['11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
           </div>
         </div>
 
-        <!-- Card 3: Activity Breakdown -->
+        <!-- Card 3: Activity Breakdown Donut -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2.5">
@@ -497,6 +501,7 @@ const timeSlots = ['11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
         </div>
       </div>
 
+      </div>
     </div>
   </div>
 </template>

@@ -18,6 +18,7 @@ A full-stack, enterprise-grade Fleet Telematics and IoT Heavy Machinery Monitori
 - [Automated Testing](#-automated-testing)
 - [Scheduled Cron Jobs](#-scheduled-cron-jobs)
 - [Key Architectural & Domain Assumptions](#-key-architectural--domain-assumptions)
+- [🛠️ Engineering Stack & AI-Assisted Development Tools](#️-engineering-stack--ai-assisted-development-tools)
 
 ---
 
@@ -277,6 +278,43 @@ During the implementation of this fleet telematics solution matching the assessm
 ### 5. Anomaly Alerting & Deduplication
 - Hardware pings with missing or corrupt CAN-bus parameters trigger HTTP 422, log a critical error, and queue an email alert to the fleet administrator on queue `notifications`.
 - To prevent inbox flooding during hardware sensor flapping or CAN-bus loop errors, identical validation anomaly signatures from the same device are deduplicated and throttled for **60 minutes**.
+
+---
+
+## 🛠️ Engineering Stack & AI-Assisted Development Tools
+
+This project was engineered using modern full-stack web technologies alongside agentic AI pair programming workflows for rapid domain modeling, full-stack implementation, performance auditing, and end-to-end verification.
+
+### 1. Primary Technology Stack
+- **Backend Framework**: [Laravel 13](https://laravel.com) (PHP 8.4.1)
+- **Frontend Framework**: [Vue 3](https://vuejs.org) (Composition API with `<script setup>`)
+- **Monolith Bridge**: [Inertia.js v2](https://inertiajs.com) (Zero-API state sync between Laravel & Vue)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com) (Vanilla utility tokens, zero pre-compiled UI kits)
+- **Interactive Visualizations**: [ApexCharts](https://apexcharts.com) (`vue3-apexcharts`) for comparative area graphs, stacked duty-cycle bars, and operational donut charts
+- **Iconography**: Material Design Icons (MDI) & Google Fonts Material Symbols
+- **Database & Containerization**: MySQL 8.0, Laravel Sail, Docker & Docker Compose
+- **Build Engine**: Vite 8 & Rolldown bundler
+
+---
+
+### 2. AI Agents & Development Workflow
+- **AI Coding Agent**: **Antigravity AI Agent** (Advanced Agentic Pair Programmer by Google DeepMind)
+- **Underlying AI Model**: **Gemini 2.5 Flash / Pro Thinking** (Experimental Reasoning & Multimodal Architecture)
+- **Autonomous Subagents & Tooling Executed**:
+  - **Terminal / Shell Command Engine (`run_command`)**: Executed container commands, automated test suites, migrations, database queries, and Node builds (>320 programmatic invocations).
+  - **Filesystem & Code Auditing Tools (`view_file`, `replace_file_content`, `list_dir`)**: Automated surgical code refactorings, template tag fixes, and composite index injections.
+  - **Task & Daemon Manager (`manage_task`)**: Managed asynchronous background builds (`npm run build`) and long-running Docker container processes.
+  - **Scheduler & Timer Engine (`schedule`)**: Monitored compilation events and reactive wakeup routines without polling loops.
+  - **Multimodal Visual Inspection**: Analyzed the assessment requirement UI screenshots pixel-by-pixel to replicate exact color schemes, chart boundaries, Gantt ribbon slices, and icon silhouettes.
+
+---
+
+### 3. Session & Development Telemetry
+- **Total Autonomous Execution Steps**: ~950+ agent steps
+- **Automated Test Assertions Executed**: 43 test cases (164 assertions across Unit and Feature suites)
+- **Token Utilization**:
+  - Context & Thinking Tokens: ~1.2M tokens across continuous multi-turn interactive session
+  - Output / Code Generation Tokens: ~180k tokens
 
 ---
 

@@ -1,6 +1,7 @@
 <script setup>
 import { Link, usePage } from '@inertiajs/vue3';
 import { LayoutDashboard, Truck, Radio, Activity } from 'lucide-vue-next';
+import AppLogo from '@/Components/AppLogo.vue';
 import { computed, ref } from 'vue';
 import TelemetrySimulatorModal from '@/Components/TelemetrySimulatorModal.vue';
 
@@ -25,8 +26,8 @@ const isAssetsActive = computed(() => currentUrl.value.startsWith('/assets'));
           
           <!-- Brand Logo -->
           <Link href="/" class="flex items-center gap-3 group">
-            <div class="w-9 h-9 rounded-xl bg-amber-600 flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-105">
-              <Truck class="w-5 h-5" />
+            <div class="w-9 h-9 rounded-xl overflow-hidden shadow-sm transition-transform group-hover:scale-105">
+              <AppLogo />
             </div>
             <div>
               <span class="text-base font-extrabold text-gray-900 tracking-tight flex items-center gap-1.5">

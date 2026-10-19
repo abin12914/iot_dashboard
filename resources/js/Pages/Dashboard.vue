@@ -38,8 +38,44 @@ const props = defineProps({
   selectedDate: {
     type: String,
     default: '2026-03-23'
+  },
+  assetType: {
+    type: String,
+    default: 'all'
+  },
+  search: {
+    type: String,
+    default: ''
   }
 });
+
+import { ref } from 'vue';
+import { router } from '@inertiajs/vue3';
+import { Search, XCircle, RotateCcw } from 'lucide-vue-next';
+
+const isFilterOpen = ref(false);
+const filterDate = ref(props.selectedDate);
+const filterType = ref(props.assetType || 'all');
+const filterSearch = ref(props.search || '');
+
+const applyFilters = () => {
+  router.get('/', {
+    date: filterDate.value,
+    asset_type: filterType.value,
+    search: filterSearch.value,
+  }, {
+    preserveState: true,
+    preserveScroll: true,
+    only: ['assets', 'selectedDate', 'assetType', 'search'],
+  });
+};
+
+const resetFilters = () => {
+  filterDate.value = '2026-03-23';
+  filterType.value = 'all';
+  filterSearch.value = '';
+  applyFilters();
+};
 
 // All 15 date labels for categories
 const dateCategories = computed(() => props.dailyMetrics.map(m => m.date_label));
@@ -311,7 +347,10 @@ const timeSlots = ['11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2.5">
-              <Radio class="w-5 h-5 text-gray-700" />
+              <!-- Google Font / Material Symbol "route" icon -->
+              <svg class="w-5 h-5 text-gray-700 fill-current" viewBox="0 0 24 24">
+                <path d="M19 15.18V7c0-2.21-1.79-4-4-4s-4 1.79-4 4v10c0 1.1-.9 2-2 2s-2-.9-2-2V8.82C8.16 8.4 9 7.3 9 6c0-1.66-1.34-3-3-3S3 4.34 3 6c0 1.3.84 2.4 2 2.82V17c0 2.21 1.79 4 4 4s4-1.79 4-4V7c0-1.1.9-2 2-2s2 .9 2 2v8.18c-1.16.41-2 1.51-2 2.82 0 1.66 1.34 3 3 3s3-1.34 3-3c0-1.31-.84-2.41-2-2.82z"/>
+              </svg>
               <h2 class="text-base font-bold text-gray-800">
                 Traveled distance ({{ summary.total_distance_km }}km)
               </h2>
@@ -334,7 +373,10 @@ const timeSlots = ['11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2.5">
-              <Cpu class="w-5 h-5 text-gray-700" />
+              <!-- Material Design Icon: mdiEngine -->
+              <svg class="w-5 h-5 text-gray-700 fill-current" viewBox="0 0 24 24">
+                <path d="M7,4V6H10V8H7L5,10V13H3V10H1V18H3V15H5V18H8L10,20H18V16H20V19H23V9H20V12H18V8H12V6H15V4H7M8,10H16V14H8V10Z"/>
+              </svg>
               <h2 class="text-base font-bold text-gray-800">Engine hours</h2>
             </div>
           </div>
@@ -352,7 +394,10 @@ const timeSlots = ['11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2.5">
-              <Truck class="w-5 h-5 text-gray-700" />
+              <!-- Material Design Icon: mdi-car -->
+              <svg class="w-5 h-5 text-gray-700 fill-current" viewBox="0 0 24 24">
+                <path d="M5,11L6.5,6.5H17.5L19,11M17.5,16A1.5,1.5 0 0,1 16,14.5A1.5,1.5 0 0,1 17.5,13A1.5,1.5 0 0,1 19,14.5A1.5,1.5 0 0,1 17.5,16M6.5,16A1.5,1.5 0 0,1 5,14.5A1.5,1.5 0 0,1 6.5,13A1.5,1.5 0 0,1 8,14.5A1.5,1.5 0 0,1 6.5,16M18.92,6C18.72,5.42 18.16,5 17.5,5H6.5C5.84,5 5.28,5.42 5.08,6L3,12V20A1,1 0 0,0 4,21H5A1,1 0 0,0 6,20V19H18V20A1,1 0 0,0 19,21H20A1,1 0 0,0 21,20V12L18.92,6Z"/>
+              </svg>
               <h2 class="text-base font-bold text-gray-800">Activity breakdown (Hours)</h2>
             </div>
           </div>
@@ -386,7 +431,10 @@ const timeSlots = ['11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2.5">
-              <MessageSquare class="w-5 h-5 text-gray-700" />
+              <!-- Material Design Icon: mdi-comment-processing -->
+              <svg class="w-5 h-5 text-gray-700 fill-current" viewBox="0 0 24 24">
+                <path d="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M17,11V9H15V11H17M13,11V9H11V11H13M9,11V9H7V11H9Z"/>
+              </svg>
               <h2 class="text-base font-bold text-gray-800">Messages received</h2>
             </div>
           </div>
@@ -406,13 +454,108 @@ const timeSlots = ['11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
           <div class="flex items-center gap-2.5">
-            <Calendar class="w-5 h-5 text-gray-700" />
+            <!-- Calendar with top binder rings matching screenshot -->
+            <svg class="w-5 h-5 text-gray-700 fill-current" viewBox="0 0 24 24">
+              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11zM7 11h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z"/>
+            </svg>
             <h2 class="text-base font-bold text-gray-800">Day overview</h2>
           </div>
-          <button class="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-            <Filter class="w-4 h-4" />
+          
+          <!-- Filter Button Styled Exactly as in Screenshot 2 -->
+          <button 
+            type="button"
+            @click="isFilterOpen = !isFilterOpen"
+            class="w-32 h-7 rounded bg-[#F8F9FA] hover:bg-[#F1F3F5] flex items-center justify-end px-2.5 transition-colors cursor-pointer border border-transparent"
+            :class="{ 'border-gray-200 bg-[#F1F3F5]': isFilterOpen }"
+            title="Filter Day Overview"
+          >
+            <!-- Solid muted gray funnel matching screenshot -->
+            <svg class="w-3.5 h-3.5 fill-[#C4C7CF] text-[#C4C7CF]" viewBox="0 0 24 24">
+              <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V19a1 1 0 01-.553.894l-4 2A1 1 0 019 21v-5.586a1 1 0 00-.293-.707L2.293 8.293A1 1 0 012 7.586V4a1 1 0 011-1z" />
+            </svg>
           </button>
         </div>
+
+        <!-- Filter Controls Panel -->
+        <transition
+          enter-active-class="transition duration-150 ease-out"
+          enter-from-class="transform opacity-0 -translate-y-2"
+          enter-to-class="transform opacity-100 translate-y-0"
+          leave-active-class="transition duration-100 ease-in"
+          leave-from-class="transform opacity-100 translate-y-0"
+          leave-to-class="transform opacity-0 -translate-y-2"
+        >
+          <div v-if="isFilterOpen" class="mb-6 p-4 bg-gray-50/90 rounded-xl border border-gray-200/80 space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <!-- Date Picker -->
+              <div>
+                <label class="block text-[11px] font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                  Timeline Date
+                </label>
+                <input 
+                  type="date" 
+                  v-model="filterDate"
+                  @change="applyFilters"
+                  class="w-full text-xs bg-white rounded-lg border-gray-300 focus:border-amber-500 focus:ring focus:ring-amber-200 py-1.5"
+                />
+              </div>
+
+              <!-- Machinery Type Filter -->
+              <div>
+                <label class="block text-[11px] font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                  Equipment Category
+                </label>
+                <select 
+                  v-model="filterType"
+                  @change="applyFilters"
+                  class="w-full text-xs bg-white rounded-lg border-gray-300 focus:border-amber-500 focus:ring focus:ring-amber-200 py-1.5"
+                >
+                  <option value="all">All Machinery Types</option>
+                  <option value="loader">Loader</option>
+                  <option value="wheel_loader">Wheel Loader</option>
+                  <option value="bulldozer">Bulldozer</option>
+                  <option value="excavator">Excavator</option>
+                </select>
+              </div>
+
+              <!-- Asset Search Filter -->
+              <div>
+                <label class="block text-[11px] font-semibold text-gray-600 uppercase tracking-wider mb-1">
+                  Machine Code / Name
+                </label>
+                <div class="relative">
+                  <input 
+                    type="text" 
+                    v-model="filterSearch"
+                    @keyup.enter="applyFilters"
+                    placeholder="Search BL-08, Caterpillar..."
+                    class="w-full text-xs bg-white rounded-lg border-gray-300 focus:border-amber-500 focus:ring focus:ring-amber-200 pl-8 pr-3 py-1.5"
+                  />
+                  <Search class="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2.5 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="flex items-center justify-end gap-2 pt-2 border-t border-gray-200/60">
+              <button 
+                type="button" 
+                @click="resetFilters"
+                class="inline-flex items-center gap-1.5 px-3 py-1 text-xs text-gray-500 hover:text-gray-800 rounded-md transition-colors"
+              >
+                <RotateCcw class="w-3 h-3" />
+                Reset
+              </button>
+              <button 
+                type="button" 
+                @click="applyFilters"
+                class="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-lg shadow-2xs transition-colors"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </transition>
 
         <!-- Timeline Grid -->
         <div class="overflow-x-auto">

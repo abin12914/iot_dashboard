@@ -16,11 +16,30 @@ class TelematicsDashboardService
      * @param string $windowEnd   e.g. '18:30'
      * @return array
      */
-    public function getAssetDayOverview(string $date = '2026-03-23', string $windowStart = '10:30', string $windowEnd = '18:30'): array
+    public function getAssetDayOverview(
+        string $date = '2026-03-23', 
+        string $windowStart = '10:30', 
+        string $windowEnd = '18:30',
+        ?string $assetType = null,
+        ?string $search = null
+    ): array
     {
-        return Asset::with(['activityIntervals' => function ($query) use ($date) {
-            $query->where('local_date', $date)->orderBy('started_at_utc');
-        }])->get()->map(function ($asset) use ($date, $windowStart, $windowEnd) {
+        $query = Asset::with(['activityIntervals' => function ($q) use ($date) {
+            $q->where('local_date', $date)->orderBy('started_at_utc');
+        }]);
+
+        if ($assetType && $assetType !== 'all') {
+            $query->where('type', $assetType);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('code', 'like', "%{$search}%")
+                  ->orWhere('name', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->get()->map(function ($asset) use ($date, $windowStart, $windowEnd) {
             
             $timezone = $asset->timezone ?: 'Asia/Dubai';
             $startWindow = Carbon::parse("{$date} {$windowStart}", $timezone);

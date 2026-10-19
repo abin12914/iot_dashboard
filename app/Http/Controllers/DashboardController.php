@@ -24,8 +24,10 @@ class DashboardController extends Controller
         $selectedDate = $request->query('date', '2026-03-23');
         $windowStart  = $request->query('window_start', '10:30');
         $windowEnd    = $request->query('window_end', '18:30');
+        $assetType    = $request->query('asset_type');
+        $search       = $request->query('search');
 
-        $assetsOverview = $this->dashboardService->getAssetDayOverview($selectedDate, $windowStart, $windowEnd);
+        $assetsOverview = $this->dashboardService->getAssetDayOverview($selectedDate, $windowStart, $windowEnd, $assetType, $search);
         $kpiMetrics     = $this->dashboardService->getDashboardMetrics();
 
         return Inertia::render('Dashboard', [
@@ -35,6 +37,8 @@ class DashboardController extends Controller
             'selectedDate'  => $selectedDate,
             'windowStart'   => $windowStart,
             'windowEnd'     => $windowEnd,
+            'assetType'     => $assetType ?? 'all',
+            'search'        => $search ?? '',
         ]);
     }
 
@@ -47,8 +51,10 @@ class DashboardController extends Controller
         $selectedDate = $request->query('date', '2026-03-23');
         $windowStart  = $request->query('window_start', '10:30');
         $windowEnd    = $request->query('window_end', '18:30');
+        $assetType    = $request->query('asset_type');
+        $search       = $request->query('search');
 
-        $assetsOverview = $this->dashboardService->getAssetDayOverview($selectedDate, $windowStart, $windowEnd);
+        $assetsOverview = $this->dashboardService->getAssetDayOverview($selectedDate, $windowStart, $windowEnd, $assetType, $search);
 
         if ($request->wantsJson()) {
             return response()->json([

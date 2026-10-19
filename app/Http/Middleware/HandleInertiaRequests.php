@@ -45,10 +45,13 @@ class HandleInertiaRequests extends Middleware
             ];
         }
 
+        $assetsList = \App\Models\Asset::orderBy('code')->get(['id', 'code', 'name', 'type']);
+
         return [
             ...parent::share($request),
             'appName' => config('app.name', 'Telematics'),
             'lastPing' => $lastPingData,
+            'simulatorAssets' => $assetsList,
             'auth' => [
                 'user' => $request->user(),
             ],

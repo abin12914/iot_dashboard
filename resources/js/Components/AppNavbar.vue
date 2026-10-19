@@ -1,7 +1,10 @@
 <script setup>
 import { Link, usePage } from '@inertiajs/vue3';
-import { LayoutDashboard, Truck, Radio, Clock } from 'lucide-vue-next';
-import { computed } from 'vue';
+import { LayoutDashboard, Truck, Radio, Activity } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
+import TelemetrySimulatorModal from '@/Components/TelemetrySimulatorModal.vue';
+
+const isSimulatorOpen = ref(false);
 
 const page = usePage();
 const currentUrl = computed(() => page.url);
@@ -58,6 +61,16 @@ const isAssetsActive = computed(() => currentUrl.value.startsWith('/assets'));
               <Truck class="w-4 h-4" :class="isAssetsActive ? 'text-amber-600' : 'text-gray-400'" />
               Asset Inventory
             </Link>
+
+            <!-- Simulator Trigger Button in Navigation -->
+            <button
+              type="button"
+              @click="isSimulatorOpen = true"
+              class="inline-flex items-center gap-2 px-3 py-2 text-xs font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all cursor-pointer"
+            >
+              <Activity class="w-4 h-4 text-amber-500" />
+              <span>IoT Simulator</span>
+            </button>
           </div>
 
         </div>
@@ -92,4 +105,10 @@ const isAssetsActive = computed(() => currentUrl.value.startsWith('/assets'));
       </div>
     </div>
   </nav>
+
+  <!-- Telemetry Simulator Modal -->
+  <TelemetrySimulatorModal 
+    :is-open="isSimulatorOpen" 
+    @close="isSimulatorOpen = false" 
+  />
 </template>

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\TelematicsDashboardService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,9 +17,9 @@ class DashboardController extends Controller
     }
 
     /**
-     * Display the primary telematics dashboard.
+     * Display the fleet overview telematics monitoring dashboard.
      */
-    public function index(Request $request): Response
+    public function showFleetOverview(Request $request): Response
     {
         $selectedDate = $request->query('date', '2026-03-23');
         $windowStart  = $request->query('window_start', '10:30');

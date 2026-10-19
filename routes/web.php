@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 // 1. Primary Fleet Telematics Dashboard (Images 1 & 2)
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-Route::get('/dashboard', [DashboardController::class, 'index']);
+Route::get('/', [DashboardController::class, 'showFleetOverview'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'showFleetOverview']);
 
 // Dedicated partial endpoints for filters & refresh
 Route::get('/dashboard/day-overview', [DashboardController::class, 'dayOverview'])->name('dashboard.day-overview');

@@ -64,16 +64,10 @@ const distanceChart = computed(() => ({
       zoom: { enabled: false },
       fontFamily: 'inherit'
     },
-    colors: ['#D97706', '#E5C088'],
+    colors: ['#C25E1A', '#CCA380'],
     fill: {
-      type: ['gradient', 'solid'],
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.45,
-        opacityTo: 0.05,
-        stops: [0, 90, 100]
-      },
-      opacity: [0.35, 0.05]
+      type: ['solid', 'solid'],
+      opacity: [0.55, 0.0]
     },
     stroke: {
       curve: 'smooth',
@@ -81,8 +75,8 @@ const distanceChart = computed(() => ({
       dashArray: [0, 5]
     },
     markers: {
-      size: [4, 3],
-      colors: ['#B45309', '#D97706'],
+      size: [4.5, 3],
+      colors: ['#C25E1A', '#CCA380'],
       strokeWidth: 2,
       hover: { size: 6 }
     },
@@ -160,7 +154,7 @@ const engineHoursChart = computed(() => ({
       toolbar: { show: false },
       fontFamily: 'inherit'
     },
-    colors: ['#059669', '#EA580C'],
+    colors: ['#00875A', '#E07A28'],
     plotOptions: {
       bar: {
         columnWidth: '42%',
@@ -214,7 +208,7 @@ const activityDonutChart = computed(() => ({
       height: 220,
       fontFamily: 'inherit'
     },
-    colors: ['#881337', '#059669', '#EA580C'],
+    colors: ['#881337', '#00875A', '#E07A28'],
     labels: ['Ignition Off', 'Ignition', 'Idling'],
     stroke: { width: 3, colors: ['#FFFFFF'] },
     plotOptions: {
@@ -377,11 +371,11 @@ const timeSlots = ['11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
                 <span>Ignition Off</span>
               </div>
               <div class="flex items-center gap-2 text-sm text-gray-700 font-medium">
-                <span class="w-3.5 h-3.5 rounded-full bg-[#059669]"></span>
+                <span class="w-3.5 h-3.5 rounded-full bg-[#00875A]"></span>
                 <span>Ignition</span>
               </div>
               <div class="flex items-center gap-2 text-sm text-gray-700 font-medium">
-                <span class="w-3.5 h-3.5 rounded-full bg-[#EA580C]"></span>
+                <span class="w-3.5 h-3.5 rounded-full bg-[#E07A28]"></span>
                 <span>Idling</span>
               </div>
             </div>
